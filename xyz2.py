@@ -1,8 +1,5 @@
-import os
-import traceback
+import os, sys, subprocess, traceback, webbrowser
 from zipfile import ZipFile
-
-
 
 assignment_name = input("Assignment Name or Alias: ")
 zipped_parent = input("Zipped Download-File Path: \n")
@@ -90,11 +87,11 @@ def trim_filepath(input):
 # #A webbrowser.open_new() could work if the links can be accessesed as strings
 # # ? if so could they still be packaged up with the downloaded zip in a student named file?
 def open_links(filepath):
-  import webbrowser
   try:
     from bs4 import BeautifulSoup
   except:
-    install_bs4()
+    #? Possible system dependent command
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'beautifulsoup4'])
     from bs4 import BeautifulSoup
   with open(filepath) as fp:
     soup = BeautifulSoup(fp, features="html.parser")
@@ -103,12 +100,6 @@ def open_links(filepath):
     print(f"...Opening {link}")
     webbrowser.open_new(link)
   print()
-
-def install_bs4():
-  import subprocess
-  import sys
-  #? Possible system dependent command
-  subprocess.check_call([sys.executable, "-m", "pip", "install", 'beautifulsoup4'])
 
 # todo Check for projects *not in a parent directory *in nested parent directory
 #!? Does os.system() bash commands require git bash be installed for windows systems?
