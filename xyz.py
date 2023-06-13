@@ -1,25 +1,33 @@
 import os
+import traceback
 from datetime import datetime
 from zipfile import ZipFile
 
-zipped_parent = input("Zipped Downloaded Assignments Directory Path:\n")
-cohort_name = input("Enter Desired Destination Cohort Directory Name:\n")
-assignment_name = input("Assignment Name (Anything You Want... Not A Path):")
-cohort_path = f'C:/Users/theau/Dojo/cohorts/{cohort_name}/'
+zipped_parent = input("Please provide zipped assignments directory path: \n")
+location_option = input("To unzip files into containing directory enter Y\n   *OR*\nPlease provide path to destination directory: ")
+possible_input = ['y', '']
+if location_option.lower() in possible_input:
+  destination_path = None
+else:
+  destination_path = location_option
+assignment_name = input("Rename git links.html file to be assignment specific(Anything You Want... Not A Path): ")
 
 def if_group(dir_path):
   if not os.path.exists(dir_path):
     os.mkdir(dir_path)
 
-def scan_incoming(incoming, cohort):
+def scan_assignments(incoming, destination_path):
+  if destination_path == None:
+    destination_path = incoming.replace('(temp)', '')
+  if_group(destination_path)
   for file in os.listdir(incoming):
     student_name = os.fsdecode(file)
     download_dir = os.fsdecode(incoming)+'\\'+student_name
-    student_dir = cohort+student_name
+    student_dir = destination_path+student_name
     if student_name.replace(' ', '').endswith(".html"):
       print(f"{student_name} is not a directory or zipped file...")
-      print(f"Copying File At:\n {download_dir}\nTo: {cohort}\n")
-      os.system(f"cp -rf '{download_dir}' '{cohort}{assignment_name} gitLinks {datetime.now().strftime('%d-%m-%Y %I:%M')}.html'")
+      print(f"Copying File At:\n {download_dir}\nTo: {destination_path}\n")
+      os.system(f"cp -rf '{download_dir}' '{destination_path}{assignment_name} gitLinks {datetime.now().strftime('%d-%m-%Y %I:%M')}.html'")
       continue
     if not os.path.exists(student_dir):
       os.mkdir(student_dir)
@@ -38,14 +46,25 @@ def open_parent(input):
     zObject.extractall(path= destination_path)
   return destination_path
 
+def destroy_temp(input):
+  temp_parent = trim_filepath(input).replace('.zip', '(temp)').replace('&', '')
+  if os.path.exists(temp_parent):
+    os.system(f"rm -rf '{temp_parent}'")
+
 def trim_filepath(input):
   if input != None:
     return input.strip(' "')
   else:
     return input
 
-ifCohort(cohort_path)
-scan_incoming(open_parent(zipped_parent), cohort_path)
+try:
+  scan_assignments(open_parent(zipped_parent), trim_filepath(destination_path))
+  destroy_temp(zipped_parent)
+except Exception as e:
+  destroy_temp(zipped_parent)
+  print(f"<<**ERROR**>>\n{e}")
+  print("--------------------------------------------------")
+  traceback.print_exc()
 
 
 
