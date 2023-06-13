@@ -1,5 +1,4 @@
-import os
-import traceback
+import os, sys, subprocess, traceback, webbrowser
 from zipfile import ZipFile
 
 assignment_name = input("Assignment Name or Alias: ")
@@ -68,11 +67,10 @@ def trim_filepath(input):
     return input
 
 def open_links(filepath):
-  import webbrowser
   try:
     from bs4 import BeautifulSoup
   except:
-    install_bs4()
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'beautifulsoup4'])
     from bs4 import BeautifulSoup
   with open(filepath) as fp:
     soup = BeautifulSoup(fp, features="html.parser")
@@ -81,11 +79,6 @@ def open_links(filepath):
     print(f"...Opening {link}")
     webbrowser.open_new(link)
   print()
-
-def install_bs4():
-  import subprocess
-  import sys
-  subprocess.check_call([sys.executable, "-m", "pip", "install", 'beautifulsoup4'])
 
 try:
   scan_assignments(open_parent(zipped_parent), trim_filepath(destination_path))
