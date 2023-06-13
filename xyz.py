@@ -2,18 +2,21 @@ import os
 import traceback
 from zipfile import ZipFile
 
-zipped_parent = input("Please provide zipped assignments directory path: \n")
+assignment_name = input("Assignment Name or Alias: ")
+zipped_parent = input("Zipped Download-File Path: \n")
 location_option = input("To unzip files into containing directory enter Y\n   *OR*\nPlease provide path to destination directory: ")
-possible_input = ['y', '']
+possible_input = ['nothing', 'none','y', '']
 if location_option.lower() in possible_input:
   destination_path = None
 else:
   destination_path = location_option
-assignment_name = input("Rename git links.html file to be assignment specific(Anything You Want... Not A Path): ")
 
 def if_group(dir_path):
   if not os.path.exists(dir_path):
     os.mkdir(dir_path)
+    print(f"{dir_path} CREATED")
+  else:
+    print(f"{dir_path} FOUND")
 
 def scan_assignments(incoming, destination_path):
   if destination_path == None:
@@ -29,27 +32,26 @@ def scan_assignments(incoming, destination_path):
       os.system(f"cp -rf '{download_dir}' '{new_name}'")
       open_links(new_name)
       continue
-    if not os.path.exists(student_dir):
-      os.mkdir(student_dir)
-      print(f"\n{file_name} Directory CREATED")
-    else:
-      print(f"\n{file_name} Directory FOUND")
-    for file in os.listdir(download_dir):
-      with ZipFile(download_dir+"\\"+file, 'r') as zObject:
-        assignment_dir = zObject.namelist()[0].split('.')[0]
-        if os.path.exists(student_dir+"\\"+assignment_dir):
-          print(f"Assignment {assignment_dir} alrady exists for {file_name}\n  Skipping this .zip file...\n")
-          continue
-        else:
-          print(f"Extracting contents of: \n {file}\nTo: {student_dir}\n")
-          zObject.extractall(path=student_dir)
+    if_group(student_dir)
+    open_child(download_dir, student_dir, file_name)
   destroy_temp(incoming)
 
+def open_child(input_location, student, file_name):
+  for file in os.listdir(input_location):
+    with ZipFile(input_location+"\\"+file, 'r') as zObject:
+      assignment_dir = zObject.namelist()[0].split('.')[0]
+      if os.path.exists(student+"\\"+assignment_dir):
+        print(f"Assignment {assignment_dir} alrady exists for {file_name}\n  Skipping file...\n")
+        continue
+      else:
+        print(f"Extracting contents of: \n {file}\nTo: {student}\n")
+        zObject.extractall(path=student)
+
 def open_parent(input):
-  print("Extracting Parent Directory...")
   trimmed_incoming = trim_filepath(input)
   destination_path = trimmed_incoming.replace('.zip', '(temp)').replace('&', '')
   if_group(destination_path)
+  print()
   with ZipFile(trimmed_incoming, 'r') as zObject:
     zObject.extractall(path= destination_path)
   return destination_path
@@ -70,16 +72,20 @@ def open_links(filepath):
   try:
     from bs4 import BeautifulSoup
   except:
-    import subprocess
-    import sys
-    subprocess.check_call([sys.executable, "-m", "pip", "install", 'beautifulsoup4'])
-  from bs4 import BeautifulSoup
+    install_bs4()
+    from bs4 import BeautifulSoup
   with open(filepath) as fp:
     soup = BeautifulSoup(fp, features="html.parser")
   for link in soup.find_all('a'):
     link = link.get('href')
-    print(f"Opening {link}...")
+    print(f"...Opening {link}")
     webbrowser.open_new(link)
+  print()
+
+def install_bs4():
+  import subprocess
+  import sys
+  subprocess.check_call([sys.executable, "-m", "pip", "install", 'beautifulsoup4'])
 
 try:
   scan_assignments(open_parent(zipped_parent), trim_filepath(destination_path))
