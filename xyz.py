@@ -1,6 +1,5 @@
 import os
 import traceback
-from datetime import datetime
 from zipfile import ZipFile
 
 zipped_parent = input("Please provide zipped assignments directory path: \n")
@@ -21,21 +20,30 @@ def scan_assignments(incoming, destination_path):
     destination_path = incoming.replace('(temp)', '')
   if_group(destination_path)
   for file in os.listdir(incoming):
-    student_name = os.fsdecode(file)
-    download_dir = os.fsdecode(incoming)+'\\'+student_name
-    student_dir = destination_path+student_name
-    if student_name.replace(' ', '').endswith(".html"):
-      print(f"{student_name} is not a directory or zipped file...")
-      print(f"Copying File At:\n {download_dir}\nTo: {destination_path}\n")
-      os.system(f"cp -rf '{download_dir}' '{destination_path}{assignment_name} gitLinks {datetime.now().strftime('%d-%m-%Y %I:%M')}.html'")
+    file_name = os.fsdecode(file)
+    download_dir = incoming+'\\'+file_name
+    student_dir = destination_path+'\\'+file_name
+    if file_name.replace(' ', '').endswith(".html"):
+      new_name = f'{destination_path}\\{assignment_name}_gitLinks.html'
+      print(f"\nCopying File: \n {file_name}\nTo: {new_name}")
+      os.system(f"cp -rf '{download_dir}' '{new_name}'")
+      open_links(new_name)
       continue
     if not os.path.exists(student_dir):
       os.mkdir(student_dir)
-      print(f"{student_name} Assignemnt Directory CREATED")
+      print(f"\n{file_name} Directory CREATED")
+    else:
+      print(f"\n{file_name} Directory FOUND")
     for file in os.listdir(download_dir):
-      print(f"UnZipping contents at: \n {download_dir+file}\nTo: {student_dir}\n")
       with ZipFile(download_dir+"\\"+file, 'r') as zObject:
-        zObject.extractall(path=student_dir)
+        assignment_dir = zObject.namelist()[0].split('.')[0]
+        if os.path.exists(student_dir+"\\"+assignment_dir):
+          print(f"Assignment {assignment_dir} alrady exists for {file_name}\n  Skipping this .zip file...\n")
+          continue
+        else:
+          print(f"Extracting contents of: \n {file}\nTo: {student_dir}\n")
+          zObject.extractall(path=student_dir)
+  destroy_temp(incoming)
 
 def open_parent(input):
   print("Extracting Parent Directory...")
@@ -57,6 +65,22 @@ def trim_filepath(input):
   else:
     return input
 
+def open_links(filepath):
+  import webbrowser
+  try:
+    from bs4 import BeautifulSoup
+  except:
+    import subprocess
+    import sys
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'beautifulsoup4'])
+  from bs4 import BeautifulSoup
+  with open(filepath) as fp:
+    soup = BeautifulSoup(fp, features="html.parser")
+  for link in soup.find_all('a'):
+    link = link.get('href')
+    print(f"Opening {link}...")
+    webbrowser.open_new(link)
+
 try:
   scan_assignments(open_parent(zipped_parent), trim_filepath(destination_path))
   destroy_temp(zipped_parent)
@@ -65,7 +89,3 @@ except Exception as e:
   print(f"<<**ERROR**>>\n{e}")
   print("--------------------------------------------------")
   traceback.print_exc()
-
-
-
-
