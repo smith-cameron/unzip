@@ -7,12 +7,9 @@ cohort_name = input("Enter Desired Destination Cohort Directory Name:\n")
 assignment_name = input("Assignment Name (Anything You Want... Not A Path):")
 cohort_path = f'C:/Users/theau/Dojo/cohorts/{cohort_name}/'
 
-def ifCohort(dir_path):
+def if_group(dir_path):
   if not os.path.exists(dir_path):
     os.mkdir(dir_path)
-    print("Created Cohort Directory " , dir_path)
-  else:    
-    print("Cohort Directory " , dir_path ,  " already exists. Skipping task...")
 
 def scan_incoming(incoming, cohort):
   for file in os.listdir(incoming):
@@ -32,14 +29,11 @@ def scan_incoming(incoming, cohort):
       with ZipFile(download_dir+"\\"+file, 'r') as zObject:
         zObject.extractall(path=student_dir)
 
-def open_parent(incoming):
-  print("Extracting Parent Directory")
-  trimmed_incoming = None
-  if incoming[0] == '"' and incoming[len(incoming)-1] == '"':
-    trimmed_incoming = incoming[1:len(incoming)-1]
-  else:
-    trimmed_incoming = incoming
-  destination_path = trimmed_incoming.replace('.zip', '').replace('&', '')
+def open_parent(input):
+  print("Extracting Parent Directory...")
+  trimmed_incoming = trim_filepath(input)
+  destination_path = trimmed_incoming.replace('.zip', '(temp)').replace('&', '')
+  if_group(destination_path)
   with ZipFile(trimmed_incoming, 'r') as zObject:
     zObject.extractall(path= destination_path)
   return destination_path
