@@ -43,7 +43,12 @@ def open_parent(incoming):
   with ZipFile(trimmed_incoming, 'r') as zObject:
     zObject.extractall(path= destination_path)
   return destination_path
-  
+
+def trim_filepath(input):
+  if input != None:
+    return input.strip(' "')
+  else:
+    return input
 
 ifCohort(cohort_path)
 scan_incoming(open_parent(zipped_parent), cohort_path)
