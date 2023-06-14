@@ -42,6 +42,7 @@ def scan_assignments(incoming, destination_path):
       open_links(new_name)
       continue
     if_group(student_dir)
+    print()
     open_child(download_dir, student_dir, file_name)
   destroy_temp(incoming)
 
