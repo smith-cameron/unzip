@@ -29,7 +29,9 @@ def scan_assignments(incoming, destination_path):
       new_name = f'{destination_path}\\{assignment_name}_gitLinks.html'
       print(f"\nCopying File: \n {file_name}\nTo: {new_name}")
       os.system(f"cp -rf '{download_dir}' '{new_name}'")
-      open_links(new_name)
+      # open_links(new_name)
+      # Testing only opening the html file and not the containing links
+      webbrowser.open_new(new_name)
       continue
     if_group(student_dir)
     open_child(download_dir, student_dir, file_name)
