@@ -72,7 +72,7 @@ def open_parent(input):
   # ? are there any other assignemnt names with problematic characters
   if_group(destination_path)
   print()
-  if is_not_windows:
+  if is_not_windows():
     trimmed_incoming = PurePosixPath(trimmed_incoming)
   with ZipFile(trimmed_incoming, 'r') as zObject:
     zObject.extractall(path= destination_path)
