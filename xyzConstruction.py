@@ -1,7 +1,7 @@
 import os, sys, subprocess, traceback, webbrowser
 from zipfile import ZipFile
 # > https://docs.python.org/3/library/zipfile.html
-from pathlib import Path
+from pathlib import PurePath, PurePosixPath
 
 assignment_name = input("Assignment Name or Alias: ")
 zipped_parent = input("Zipped Download-File Path: \n")
@@ -19,7 +19,7 @@ else:
   destination_path = location_option
 
 def if_group(dir_path):
-  if not os.path.exists(dir_path):
+  if not os.Path.exists(dir_path):
     os.mkdir(dir_path)
     print(f"{dir_path} CREATED")
   else:
@@ -50,7 +50,6 @@ def scan_assignments(incoming, destination_path):
     open_child(download_dir, student_dir, file_name)
   destroy_temp(incoming)
 
-
 def open_child(input_location, student, file_name):
   # todo try catch for ZipFile errors
   # ? file presence, position, duplicate file names etc
@@ -59,7 +58,7 @@ def open_child(input_location, student, file_name):
       assignment_dir = zObject.namelist()[0].split('.')[0]
       # print(assignment_dir)
       # done IF assignment already exists, skip it
-      if os.path.exists(student+"\\"+assignment_dir):
+      if os.Path.exists(student+"\\"+assignment_dir):
         print(f"Assignment {assignment_dir} alrady exists for {file_name}\n  Skipping file...\n")
         continue
       else:
@@ -73,6 +72,8 @@ def open_parent(input):
   # ? are there any other assignemnt names with problematic characters
   if_group(destination_path)
   print()
+  if is_not_windows:
+    trimmed_incoming = PurePosixPath(trimmed_incoming)
   with ZipFile(trimmed_incoming, 'r') as zObject:
     zObject.extractall(path= destination_path)
   return destination_path
@@ -88,6 +89,10 @@ def trim_filepath(input):
   else:
     return input
   
+def is_not_windows():
+  if sys.platform.startswith('win32'):
+    return False
+  return True
 # # done Open git links directly into the browser
 # #A webbrowser.open_new() could work if the links can be accessesed as strings
 # # ? if so could they still be packaged up with the downloaded zip in a student named file?
@@ -116,7 +121,7 @@ def open_links(filepath):
   # import sys
   # print(sys.platform)
 # > Below to use as condition
-  # if sys.platform.startswith('linux'):
+  # if sys.platform.startswith('win32'):
 # < Based on above system type represent path of the system’s path flavour
 
 
