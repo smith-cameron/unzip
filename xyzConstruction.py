@@ -1,5 +1,7 @@
 import os, sys, subprocess, traceback, webbrowser
 from zipfile import ZipFile
+# > https://docs.python.org/3/library/zipfile.html
+from pathlib import Path
 
 assignment_name = input("Assignment Name or Alias: ")
 zipped_parent = input("Zipped Download-File Path: \n")
@@ -7,6 +9,7 @@ zipped_parent = input("Zipped Download-File Path: \n")
 #done give option to unzip to default location(containing folder)
 #done Rename git links.html file to be assignment specific
 # # ? are incoming filepath structured differently per os?
+# < PurePath() https://docs.python.org/3/library/pathlib.html#pathlib.Path
 # # ? utilize try catch for bad file path errors
 location_option = input("To unzip files into containing directory enter Y\n   *OR*\nPlease provide path to destination directory: ")
 possible_input = ['nothing', 'none','y', '']
@@ -39,7 +42,8 @@ def scan_assignments(incoming, destination_path):
       # done timestamp can be simplified... or create some simpler identifier
       # ? Posssible system dependent command
       os.system(f"cp -rf '{download_dir}' '{new_name}'")
-      open_links(new_name)
+      # open_links(new_name)
+      webbrowser.open_new(new_name)
       continue
     if_group(student_dir)
     print()
@@ -113,9 +117,11 @@ def open_links(filepath):
   # print(sys.platform)
 # > Below to use as condition
   # if sys.platform.startswith('linux'):
+# < Based on above system type represent path of the system’s path flavour
+
 
 try:
-  scan_assignments(open_parent(zipped_parent), trim_filepath(destination_path))
+  # scan_assignments(open_parent(zipped_parent), trim_filepath(destination_path))
   destroy_temp(zipped_parent)
 except Exception as e:
   destroy_temp(zipped_parent)
