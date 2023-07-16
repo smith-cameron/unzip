@@ -1,16 +1,15 @@
 import os, sys, subprocess, traceback, webbrowser
 from zipfile import ZipFile
 # > https://docs.python.org/3/library/zipfile.html
-from pathlib import PurePath, PurePosixPath
+from pathlib import PurePath, PurePosixPath, Path
 
 assignment_name = input("Assignment Name or Alias: ")
 zipped_parent = input("Zipped Download-File Path: \n")
 #done todo change cohort name input to a filepath 
 #done give option to unzip to default location(containing folder)
 #done Rename git links.html file to be assignment specific
-# # ? are incoming filepath structured differently per os?
-# < PurePath() https://docs.python.org/3/library/pathlib.html#pathlib.Path
-# # ? utilize try catch for bad file path errors
+# #done ? are incoming filepath structured differently per os?
+# #done ? utilize try catch for bad file path errors
 location_option = input("To unzip files into containing directory enter Y\n   *OR*\nPlease provide path to destination directory: ")
 possible_input = ['nothing', 'none','y', '']
 if location_option.lower() in possible_input:
@@ -19,7 +18,7 @@ else:
   destination_path = location_option
 
 def if_group(dir_path):
-  if not os.Path.exists(dir_path):
+  if not os.path.exists(dir_path):
     os.mkdir(dir_path)
     print(f"{dir_path} CREATED")
   else:
@@ -58,7 +57,7 @@ def open_child(input_location, student, file_name):
       assignment_dir = zObject.namelist()[0].split('.')[0]
       # print(assignment_dir)
       # done IF assignment already exists, skip it
-      if os.Path.exists(student+"\\"+assignment_dir):
+      if os.path.exists(student+"\\"+assignment_dir):
         print(f"Assignment {assignment_dir} alrady exists for {file_name}\n  Skipping file...\n")
         continue
       else:
