@@ -25,7 +25,7 @@ def if_group(dir_path):
     print(f"{dir_path} FOUND")
 
 def scan_assignments(incoming, destination_path):
-  #A If destination_path == None unzip into current dir else extract to destination_path path
+  #Adone If destination_path == None unzip into current dir else extract to destination_path path
   if destination_path == None:
     destination_path = incoming.replace('(temp)', '')
   if_group(destination_path)
@@ -33,13 +33,12 @@ def scan_assignments(incoming, destination_path):
     file_name = os.fsdecode(file)
     download_dir = incoming+'\\'+file_name
     student_dir = destination_path+'\\'+file_name
-    # # todo Check for .metadata, _MACOSX, .git, node_modules
-    # # ? what other files for other stacks can be filtered out
+    # #done todo Check for .metadata, _MACOSX, .git, node_modules
+    # #done ? what other files for other stacks can be filtered out
     if file_name.replace(' ', '').endswith(".html"):
       new_name = f'{destination_path}\\{assignment_name}_gitLinks.html'
       print(f"\nCopying File: \n {file_name}\nTo: {new_name}")
       # done timestamp can be simplified... or create some simpler identifier
-      # ? Posssible system dependent command
       os.system(f"cp -rf '{download_dir}' '{new_name}'")
       # open_links(new_name)
       webbrowser.open_new(new_name)
@@ -50,8 +49,8 @@ def scan_assignments(incoming, destination_path):
   destroy_temp(incoming)
 
 def open_child(input_location, student, file_name):
-  # todo try catch for ZipFile errors
   # ? file presence, position, duplicate file names etc
+# todo Check for projects *not in a parent directory *in nested parent directory
   for file in os.listdir(input_location):
     with ZipFile(input_location+"\\"+file, 'r') as zObject:
       assignment_dir = zObject.namelist()[0].split('.')[0]
@@ -109,20 +108,6 @@ def open_links(filepath):
     print(f"...Opening {link}")
     webbrowser.open_new(link)
   print()
-
-# todo Check for projects *not in a parent directory *in nested parent directory
-#!? Does os.system() bash commands require git bash be installed for windows systems?
-
-# <Identifying terminal type to use custom commands
-  # print(os.ctermid()) #didnt work
-  # print(os.uname()) #didnt work
-  #> Below prints the system identifier windows:'win32', macos:'darwin', linux:'linux'
-  # import sys
-  # print(sys.platform)
-# > Below to use as condition
-  # if sys.platform.startswith('win32'):
-# < Based on above system type represent path of the system’s path flavour
-
 
 try:
   # scan_assignments(open_parent(zipped_parent), trim_filepath(destination_path))

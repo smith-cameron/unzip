@@ -30,7 +30,8 @@ def scan_assignments(incoming, destination_path):
             new_name = os.path.join(destination_path, f"{assignment_name}_gitLinks.html")
             print(f"\nCopying File:\n{file_name}\nTo: {new_name}")
             shutil.copy(download_dir, new_name)
-            webbrowser.open_new(new_name)
+            # open_links(new_name) #Opens github repos listed in _gitLinks.html
+            webbrowser.open_new(new_name) #Opens _gitLinks.html
             continue
         if is_filtered_file(file_name):
             print(f"Skipping File:\n{file_name}\n")
