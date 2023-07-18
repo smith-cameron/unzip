@@ -2,9 +2,9 @@ import os, sys, subprocess, traceback, webbrowser, shutil
 from zipfile import ZipFile
 
 assignment_name = input("Assignment Name or Alias: ")
-zipped_parent = input("Zipped Download-File Path: \n")
-location_option = input("To unzip files into containing directory enter Y\n   *OR*\nPlease provide path to destination directory: ")
-possible_input = ['nothing', 'none', 'y', '']
+zipped_parent = input("FILE PATH to ZIPPED DOWNLOADED assignemnt directory(where is it?): \n")
+location_option = input("To unzip files into containing directory enter Y... or nothing...\n   *OR*\nPlease provide FILE PATH to destination directory(where is it going?): ")
+possible_input = ['nothing', 'none', 'nada', 'y', '']
 
 if location_option.lower() in possible_input:
     destination_path = None
