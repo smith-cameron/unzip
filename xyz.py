@@ -41,7 +41,7 @@ def scan_assignments(incoming, destination_path):
     destroy_temp(incoming)
 
 def is_filtered_file(file_name):
-    filtered_extensions = ['.metadata', '_MACOSX', '.git', 'node_modules']
+    filtered_extensions = ['.metadata', '_MACOSX', '.git', 'node_modules', '.DS_Store']
     for extension in filtered_extensions:
         if extension in file_name:
             return True
