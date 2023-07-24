@@ -24,8 +24,9 @@ def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
         if file_name.replace(' ', '').endswith(".html") and need_links:
             new_name = copy_links(download_dir, file_name, destination_path)
             if open_links:
+                # open_links(new_name) #Opens github repos listed in _gitLinks.html
                 webbrowser.open_new(new_name) # Opens _gitLinks.html
-                continue
+            continue
         if is_filtered_file(file_name):
             print(f"Skipping File:\n{file_name}\n")
             continue
@@ -34,13 +35,13 @@ def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
     destroy_temp(incoming)
 
 def copy_links(download_dir: str, file_name: str, destination_path: str) -> str:
-    new_name = os.path.join(destination_path, f"{assignment_name}_gitLinks.html")
+    new_name = os.path.join(destination_path, f"{file_name}_gitLinks.html")
     print(f"\nCopying File:\n{file_name}\nTo: {new_name}")
     shutil.copy(download_dir, new_name)
     return new_name
 
 def is_filtered_file(file_name: str) -> bool:
-    filtered_extensions = ['.metadata', '_MACOSX', '.git', 'node_modules', '.DS_Store']
+    filtered_extensions = ['.metadata', '_MACOSX', '.git', 'node_modules', '.DS_Store', '.html']
     for extension in filtered_extensions:
         if extension in file_name:
             return True
