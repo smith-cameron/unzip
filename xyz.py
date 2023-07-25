@@ -35,8 +35,7 @@ def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
 
 def copy_links(download_dir: str, file_name: str, destination_path: str) -> str:
     new_path = os.path.join(destination_path, f"{assignment_name}_gitLinks.html")
-    print(f"new_name: {new_path}")
-    print(f"\nCopying File:\n{file_name}\nTo: {new_path}")
+    print(f"Copying File:\n{file_name}\nTo: {new_path}\n")
     shutil.copy(download_dir, new_path)
     return new_path
 
@@ -104,6 +103,7 @@ if __name__ == "__main__":
     try:
         scan_assignments(open_parent(zipped_parent), trim_filepath(location_option))
         destroy_temp(zipped_parent)
+        #? Is line 105 needed or redundant?
     except Exception as e:
         destroy_temp(zipped_parent)
         print(f"<<**ERROR**>>\n{e}")
