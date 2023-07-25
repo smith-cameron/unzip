@@ -13,7 +13,6 @@ def if_group(dir_path: str) -> None:
         print(f"{dir_path} FOUND")
 
 def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
-    global need_links
     if destination_path is None:
         destination_path = incoming.replace('(temp)', '')
     if_group(destination_path)
@@ -35,10 +34,11 @@ def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
     destroy_temp(incoming)
 
 def copy_links(download_dir: str, file_name: str, destination_path: str) -> str:
-    new_name = os.path.join(destination_path, f"{file_name}_gitLinks.html")
-    print(f"\nCopying File:\n{file_name}\nTo: {new_name}")
-    shutil.copy(download_dir, new_name)
-    return new_name
+    new_path = os.path.join(destination_path, f"{assignment_name}_gitLinks.html")
+    print(f"new_name: {new_path}")
+    print(f"\nCopying File:\n{file_name}\nTo: {new_path}")
+    shutil.copy(download_dir, new_path)
+    return new_path
 
 def is_filtered_file(file_name: str) -> bool:
     filtered_extensions = ['.metadata', '_MACOSX', '.git', 'node_modules', '.DS_Store', '.html']
@@ -93,16 +93,15 @@ def open_links(filepath: str) -> None:
     print()
 
 if __name__ == "__main__":
-    need_links = set_decision(input("Include Git Repo Links File? (Y/yes, Any Key/no): "))
-    open_links = set_decision(input("Open Git Repo Links? (Y/yes, Any Key/no): "))
+    need_links = set_decision(input("Include Git Repo Links File? (Y/yes, Any Other Key/no): "))
     if need_links:
+        open_links = set_decision(input("Open Git Repo Links? (Y/yes, Any Other Key/no): "))
         assignment_name = input("Assignment Name or Alias: ")
-    zipped_parent = input("FILE PATH to ZIPPED DOWNLOADED assignment directory (where is it?): \n")
-    unzip_here = set_decision(input("Unzip Files in Current Directory? (Y/yes, Any Key/no): "))
-    location_option = None if unzip_here else input("Please provide FILE PATH to destination directory (where is it going?): ")
+    zipped_parent = input("FILE PATH to ZIPPED DOWNLOADED assignment directory: \n")
+    unzip_here = set_decision(input("Unzip Files in Current Directory? (Y/yes, Any Other Key/no): "))
+    location_option = None if unzip_here else input("FILE PATH to DESTINATION directory: ")
 
     try:
-        need_links = False
         scan_assignments(open_parent(zipped_parent), trim_filepath(location_option))
         destroy_temp(zipped_parent)
     except Exception as e:
