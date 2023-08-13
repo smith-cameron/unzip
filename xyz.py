@@ -26,11 +26,11 @@ def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
             copy_file(source_dir, file_name, destination_path, hw_extension)
             continue
         if '_gitLinks.html' in file_name and need_links:
-        # if file_name.replace(' ', '').endswith(".html") and need_links:
+        #! if file_name.replace(' ', '').endswith(".html") and need_links:
             new_name = copy_file(source_dir, file_name, destination_path, '_gitLinks.html')
             if open_links:
-                # open_links(new_name) #Opens github repos listed in _gitLinks.html
-                webbrowser.open_new(new_name) # Opens _gitLinks.html
+                # open_links(new_name) #>Opens github repos listed in _gitLinks.html
+                webbrowser.open_new(new_name) #> Opens _gitLinks.html
             continue
         if is_filtered_file(file_name):
             print(f"Skipping File:\n{file_name}\n")
