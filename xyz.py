@@ -1,6 +1,7 @@
 import os, sys, subprocess, traceback, webbrowser, shutil
 from zipfile import ZipFile
 from typing import Optional
+from typing import Tuple
 
 def set_decision(user_input: str) -> bool:
     return True if user_input.lower() == 'y' else False
@@ -18,10 +19,15 @@ def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
     if_group(destination_path)
     for file in os.listdir(incoming):
         file_name = os.fsdecode(file)
-        download_dir = os.path.join(incoming, file_name)
+        source_dir = os.path.join(incoming, file_name)
         student_dir = os.path.join(destination_path, file_name)
-        if file_name.replace(' ', '').endswith(".html") and need_links:
-            new_name = copy_links(download_dir, file_name, destination_path)
+        is_homework, hw_extension = is_homework(file_name)
+        if is_homework:
+            copy_file(source_dir, file_name, destination_path, hw_extension)
+            continue
+        if '_gitLinks.html' in file_name and need_links:
+        # if file_name.replace(' ', '').endswith(".html") and need_links:
+            new_name = copy_file(source_dir, file_name, destination_path, '_gitLinks.html')
             if open_links:
                 # open_links(new_name) #Opens github repos listed in _gitLinks.html
                 webbrowser.open_new(new_name) # Opens _gitLinks.html
@@ -30,11 +36,19 @@ def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
             print(f"Skipping File:\n{file_name}\n")
             continue
         if_group(student_dir)
-        open_child(download_dir, student_dir, file_name)
+        open_child(source_dir, student_dir, file_name)
     destroy_temp(incoming)
 
-def copy_links(download_dir: str, file_name: str, destination_path: str) -> str:
-    new_path = os.path.join(destination_path, f"{assignment_name}_gitLinks.html")
+def is_homework(file_name:str) -> Tuple[bool, str]:
+    homework_extensions = ['.py', '.java', '.js']
+    for extension in homework_extensions:
+        if extension in file_name:
+            return True , extension
+    #? Will this need to be False, ''
+    return False
+
+def copy_file(download_dir: str, file_name: str, destination_path: str, file_extension:str) -> str:
+    new_path = os.path.join(destination_path, f"{assignment_name}{file_extension}")
     print(f"Copying File:\n{file_name}\nTo: {new_path}\n")
     shutil.copy(download_dir, new_path)
     return new_path
