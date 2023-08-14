@@ -21,8 +21,8 @@ def scan_assignments(incoming: str, destination_path: Optional[str]) -> None:
         file_name = os.fsdecode(file)
         source_dir = os.path.join(incoming, file_name)
         student_dir = os.path.join(destination_path, file_name)
-        is_homework, hw_extension = is_homework(file_name)
-        if is_homework:
+        is_hw, hw_extension = is_homework(file_name)
+        if is_hw:
             copy_file(source_dir, file_name, destination_path, hw_extension)
             continue
         if '_gitLinks.html' in file_name and need_links:
@@ -45,7 +45,7 @@ def is_homework(file_name:str) -> Tuple[bool, str]:
         if extension in file_name:
             return True , extension
     #? Will this need to be False, ''
-    return False
+    return False, ''
 
 def copy_file(download_dir: str, file_name: str, destination_path: str, file_extension:str) -> str:
     new_path = os.path.join(destination_path, f"{assignment_name}{file_extension}")
