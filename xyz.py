@@ -40,14 +40,30 @@ def copy_links(download_dir: str, file_name: str, destination_path: str) -> str:
     return new_path
 
 def is_filtered_file(file_name: str) -> bool:
-    filtered_extensions = ['.metadata', '_MACOSX', '.git', 'node_modules', '.DS_Store', '.html']
-    for extension in filtered_extensions:
+    unwanted_extensions = ['.metadata', '_MACOSX', '__MACOSX', '.git', 'node_modules', '.DS_Store', '.html']
+    for extension in unwanted_extensions:
+        if extension in file_name:
+            return True
+    return False
+
+def is_not_zipped(file_name: str) -> bool:
+    homework_extensions = ['.py', '.js', '.java']
+    for extension in homework_extensions:
         if extension in file_name:
             return True
     return False
 
 def open_child(input_location: str, student: str, file_name: str) -> None:
+    # print(f"line 51 {os.listdir(input_location)}")
     for file in os.listdir(input_location):
+        # print(f"file: {file}")
+        # print(f"input_location: {input_location}")
+        # print(f"student: {student}")
+        # print(f"file_name: {file_name}")
+        if is_not_zipped(file):
+            print(f"Copying:\n{file}\nTo: {student}\n")
+            shutil.copy(os.path.join(input_location,file), student)
+            continue
         with ZipFile(os.path.join(input_location, file), 'r') as zObject:
             assignment_dir = zObject.namelist()[0].split('.')[0]
             if os.path.exists(os.path.join(student, assignment_dir)):
