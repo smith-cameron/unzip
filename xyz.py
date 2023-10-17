@@ -46,8 +46,8 @@ def is_filtered_file(file_name: str) -> bool:
             return True
     return False
 
-def is_not_zipped(file_name: str) -> bool:
-    homework_extensions = ['.py', '.js', '.java']
+def is_homework(file_name: str) -> bool:
+    homework_extensions = ['.py', '.js', '.java', '.sql', '.mwb', '.txt']
     for extension in homework_extensions:
         if extension in file_name:
             return True
@@ -60,7 +60,10 @@ def open_child(input_location: str, student: str, file_name: str) -> None:
         # print(f"input_location: {input_location}")
         # print(f"student: {student}")
         # print(f"file_name: {file_name}")
-        if is_not_zipped(file):
+        # file = file.trim()
+        # input_location = input_location.trim()
+        # student = student.trim()
+        if is_homework(file):
             print(f"Copying:\n{file}\nTo: {student}\n")
             shutil.copy(os.path.join(input_location,file), student)
             continue
