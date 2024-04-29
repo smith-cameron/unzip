@@ -46,8 +46,8 @@ def is_filtered_file(file_name: str) -> bool:
             return True
     return False
 
-def is_homework(file_name: str) -> bool:
-    homework_extensions = ['.py', '.js', '.java', '.sql', '.mwb', '.txt']
+def is_homework_file(file_name: str) -> bool:
+    homework_extensions = ['.py', '.js', '.java', '.sql', '.mwb', '.txt', '.pdf']
     for extension in homework_extensions:
         if extension in file_name:
             return True
@@ -63,7 +63,7 @@ def open_child(input_location: str, student: str, file_name: str) -> None:
         # file = file.trim()
         # input_location = input_location.trim()
         # student = student.trim()
-        if is_homework(file):
+        if is_homework_file(file):
             print(f"Copying:\n{file}\nTo: {student}\n")
             shutil.copy(os.path.join(input_location,file), student)
             continue
