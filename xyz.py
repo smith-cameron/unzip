@@ -1,5 +1,6 @@
 import os, sys, subprocess, traceback, webbrowser, shutil
 from zipfile import ZipFile
+import py7zr
 from typing import Optional
 
 def set_decision(user_input: str) -> bool:
@@ -54,27 +55,36 @@ def is_homework_file(file_name: str) -> bool:
     return False
 
 def open_child(input_location: str, student: str, file_name: str) -> None:
-    # print(f"line 51 {os.listdir(input_location)}")
     for file in os.listdir(input_location):
-        # print(f"file: {file}")
-        # print(f"input_location: {input_location}")
-        # print(f"student: {student}")
-        # print(f"file_name: {file_name}")
-        # file = file.trim()
-        # input_location = input_location.trim()
-        # student = student.trim()
         if is_homework_file(file):
             print(f"Copying:\n{file}\nTo: {student}\n")
             shutil.copy(os.path.join(input_location,file), student)
             continue
-        with ZipFile(os.path.join(input_location, file), 'r') as zObject:
-            assignment_dir = zObject.namelist()[0].split('.')[0]
-            if os.path.exists(os.path.join(student, assignment_dir)):
-                print(f"Assignment {assignment_dir} already exists for {file_name}\n  Skipping file...\n")
-                continue
-            else:
-                print(f"Extracting contents of:\n{file}\nTo: {student}\n")
-                zObject.extractall(path=student)
+        file_path = os.path.join(input_location, file)
+        file_extension = os.path.splitext(file)[1]
+
+        if file_extension == '.zip':
+            with ZipFile(file_path, 'r') as zObject:
+                assignment_dir = zObject.namelist()[0].split('.')[0]
+                if os.path.exists(os.path.join(student, assignment_dir)):
+                    print(f"Assignment {assignment_dir} already exists for {file_name}\n  Skipping file...\n")
+                    continue
+                else:
+                    print(f"Extracting contents of:\n{file}\nTo: {student}\n")
+                    zObject.extractall(path=student)
+
+        elif file_extension == '.7z':
+            with py7zr.SevenZipFile(file_path, mode='r') as zObject:
+                assignment_dir = zObject.getnames()[0].split('.')[0]
+                if os.path.exists(os.path.join(student, assignment_dir)):
+                    print(f"Assignment {assignment_dir} already exists for {file_name}\n  Skipping file...\n")
+                    continue
+                else:
+                    print(f"Extracting contents of:\n{file}\nTo: {student}\n")
+                    zObject.extractall(path=student)
+
+        else:
+            print(f"Unsupported file format: {file_extension}")
 
 def open_parent(input: str) -> str:
     trimmed_incoming = trim_filepath(input)
