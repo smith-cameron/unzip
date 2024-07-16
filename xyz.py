@@ -1,6 +1,7 @@
 import os, sys, subprocess, traceback, webbrowser, shutil
 from zipfile import ZipFile
 import py7zr
+import rarfile
 from typing import Optional
 
 def set_decision(user_input: str) -> bool:
@@ -82,6 +83,16 @@ def open_child(input_location: str, student: str, file_name: str) -> None:
                 else:
                     print(f"Extracting contents of:\n{file}\nTo: {student}\n")
                     zObject.extractall(path=student)
+
+        elif file_extension == '.rar':
+            with rarfile.RarFile(file_path, 'r') as rObject:
+                assignment_dir = rObject.namelist()[0].split('.')[0]
+                if os.path.exists(os.path.join(student, assignment_dir)):
+                    print(f"Assignment {assignment_dir} already exists for {file_name}\n  Skipping file...\n")
+                    continue
+                else:
+                    print(f"Extracting contents of:\n{file}\nTo: {student}\n")
+                    rObject.extractall(path=student)
 
         else:
             print(f"Unsupported file format: {file_extension}")
