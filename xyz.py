@@ -42,14 +42,14 @@ def copy_links(download_dir: str, file_name: str, destination_path: str) -> str:
     return new_path
 
 def is_filtered_file(file_name: str) -> bool:
-    unwanted_extensions = ['.metadata', '_MACOSX', '__MACOSX', '.git', 'node_modules', '.DS_Store', '.html']
+    unwanted_extensions = ['.metadata', '_MACOSX', '__MACOSX', '.git', 'node_modules', '.DS_Store', '.HEIC', '.docx', '.html']
     for extension in unwanted_extensions:
         if extension in file_name:
             return True
     return False
 
 def is_homework_file(file_name: str) -> bool:
-    homework_extensions = ['.py', '.js', '.java', '.sql', '.mwb', '.txt', '.pdf']
+    homework_extensions = ['.py', '.js', '.java', '.sql', '.mwb', '.txt', '.pdf', '.png', '.jpg', '.JPG', '.html']
     for extension in homework_extensions:
         if extension in file_name:
             return True
